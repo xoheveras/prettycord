@@ -13,7 +13,7 @@ class Serializable:
 
 class Deserializable:
     def to_json(self):
-        return getattr(self, 'data', {})
+        return getattr(self, "data", {})
 
     @classmethod
     def de_json(cls, data):

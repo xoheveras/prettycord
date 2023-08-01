@@ -25,16 +25,27 @@ DEALINGS IN THE SOFTWARE.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Callable, Any, ClassVar, Dict, Iterator, Set, TYPE_CHECKING, Tuple, Optional, Union
+from typing import (
+    Callable,
+    Any,
+    ClassVar,
+    Dict,
+    Iterator,
+    Set,
+    TYPE_CHECKING,
+    Tuple,
+    Optional,
+    Union,
+)
 
 from .enums import SlashPermissionTypes
 from .flags import BaseFlags, FlagValue, fill_with_flags, AliasFlagValue
 
 __all__ = (
-    'Permissions',
-    'PermissionOverwrite',
-    'SlashPermission',
-    'SlashPermissionConstructor'
+    "Permissions",
+    "PermissionOverwrite",
+    "SlashPermission",
+    "SlashPermissionConstructor",
 )
 
 if TYPE_CHECKING:
@@ -47,7 +58,9 @@ class PermissionAlias(AliasFlagValue):
     alias: str
 
 
-def make_permission_alias(alias: str) -> Callable[[Callable[[Any], int]], PermissionAlias]:
+def make_permission_alias(
+    alias: str,
+) -> Callable[[Callable[[Any], int]], PermissionAlias]:
     def decorator(func: Callable[[Any], int]) -> PermissionAlias:
         ret = PermissionAlias(func)
         ret.alias = alias
@@ -63,12 +76,14 @@ class Permissions(BaseFlags):
     def __init__(self, permissions: int = 0, **kwargs: bool):
         super().__init__(**kwargs)
         if not isinstance(permissions, int):
-            raise TypeError(f'Expected int parameter, received {permissions.__class__.__name__} instead.')
+            raise TypeError(
+                f"Expected int parameter, received {permissions.__class__.__name__} instead."
+            )
 
         self.value = permissions
         for key, value in kwargs.items():
             if key not in self.VALID_FLAGS:
-                raise TypeError(f'{key!r} is not a valid permission name.')
+                raise TypeError(f"{key!r} is not a valid permission name.")
             setattr(self, key, value)
 
     def is_subset(self, other: Permissions) -> bool:
@@ -76,14 +91,18 @@ class Permissions(BaseFlags):
         if isinstance(other, Permissions):
             return (self.value & other.value) == self.value
         else:
-            raise TypeError(f"cannot compare {self.__class__.__name__} with {other.__class__.__name__}")
+            raise TypeError(
+                f"cannot compare {self.__class__.__name__} with {other.__class__.__name__}"
+            )
 
     def is_superset(self, other: Permissions) -> bool:
         """Returns ``True`` if self has the same or more permissions as other."""
         if isinstance(other, Permissions):
             return (self.value | other.value) == self.value
         else:
-            raise TypeError(f"cannot compare {self.__class__.__name__} with {other.__class__.__name__}")
+            raise TypeError(
+                f"cannot compare {self.__class__.__name__} with {other.__class__.__name__}"
+            )
 
     def is_strict_subset(self, other: Permissions) -> bool:
         """Returns ``True`` if the permissions on other are a strict subset of those on self."""
@@ -352,7 +371,7 @@ class Permissions(BaseFlags):
         """:class:`bool`: Returns ``True`` if a user can read messages from all or specific text channels."""
         return 1 << 10
 
-    @make_permission_alias('read_messages')
+    @make_permission_alias("read_messages")
     def view_channel(self) -> int:
         """:class:`bool`: An alias for :attr:`read_messages`.
 
@@ -405,7 +424,7 @@ class Permissions(BaseFlags):
         """:class:`bool`: Returns ``True`` if a user can use emojis from other guilds."""
         return 1 << 18
 
-    @make_permission_alias('external_emojis')
+    @make_permission_alias("external_emojis")
     def use_external_emojis(self) -> int:
         """:class:`bool`: An alias for :attr:`external_emojis`.
 
@@ -469,7 +488,7 @@ class Permissions(BaseFlags):
         """
         return 1 << 28
 
-    @make_permission_alias('manage_roles')
+    @make_permission_alias("manage_roles")
     def manage_permissions(self) -> int:
         """:class:`bool`: An alias for :attr:`manage_roles`.
 
@@ -490,12 +509,12 @@ class Permissions(BaseFlags):
         """
         return 1 << 30
 
-    @make_permission_alias('manage_expressions')
+    @make_permission_alias("manage_expressions")
     def manage_emojis(self) -> int:
         """:class:`bool`: An alias for :attr:`manage_expressions`."""
         return 1 << 30
 
-    @make_permission_alias('manage_expressions')
+    @make_permission_alias("manage_expressions")
     def manage_emojis_and_stickers(self) -> int:
         """:class:`bool`: An alias for :attr:`manage_expressions`.
 
@@ -559,7 +578,7 @@ class Permissions(BaseFlags):
         """
         return 1 << 37
 
-    @make_permission_alias('external_stickers')
+    @make_permission_alias("external_stickers")
     def use_external_stickers(self) -> int:
         """:class:`bool`: An alias for :attr:`external_stickers`.
 
@@ -693,7 +712,7 @@ class PermissionOverwrite:
         Set the value of permissions by their name.
     """
 
-    __slots__ = ('_values',)
+    __slots__ = ("_values",)
 
     if TYPE_CHECKING:
         VALID_NAMES: ClassVar[Set[str]]
@@ -757,7 +776,7 @@ class PermissionOverwrite:
 
         for key, value in kwargs.items():
             if key not in self.VALID_NAMES:
-                raise ValueError(f'no permission called {key}.')
+                raise ValueError(f"no permission called {key}.")
 
             setattr(self, key, value)
 
@@ -766,7 +785,9 @@ class PermissionOverwrite:
 
     def _set(self, key: str, value: Optional[bool]) -> None:
         if value not in (True, None, False):
-            raise TypeError(f'Expected bool or NoneType, received {value.__class__.__name__}')
+            raise TypeError(
+                f"Expected bool or NoneType, received {value.__class__.__name__}"
+            )
 
         if value is None:
             self._values.pop(key, None)
@@ -852,7 +873,7 @@ class SlashPermission:
         return {
             "id": self.id,
             "type": self.type.value if type(self.type) is not int else str(self.type),
-            "permission": self.permission
+            "permission": self.permission,
         }
 
 
