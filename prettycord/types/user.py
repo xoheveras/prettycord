@@ -6,6 +6,7 @@ class User(Deserializable):
 
     def __init__(self, data: dict, id: str, name: str, icon: str, owner: bool, permissions: str, features: list,
                  approximate_member_count: int, approximate_presence_count: int):
+        self.data = data
         self.id = id
         self.name = name
         self.icon = icon
